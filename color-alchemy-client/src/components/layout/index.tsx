@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  return <div className="relative p-4">{children}</div>;
+  return <div className='relative p-4'>{children}</div>
 }
 
-export default Layout;
+export default Layout

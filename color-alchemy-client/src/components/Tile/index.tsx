@@ -1,21 +1,32 @@
-import React, { useContext } from "react";
-import { GameContext } from "../../context/game.context";
+import React, { useCallback, useContext, useMemo } from 'react'
+import { GameContext } from '../../context/game.context'
 
-import { toNumbersRGBColor } from "../../utils";
-import Tooltip from "../Tooltip";
+import { toNumbersRGBColor } from '../../utils'
+import Tooltip from '../Tooltip'
 
 interface TileProps {
-  position: string;
-  closest: boolean;
-  color: string;
+  position: string
+  closest: boolean
+  color: string
 }
 
 export function Tile({ position, color, closest }: TileProps) {
-  const { moveStep } = useContext(GameContext);
+  const { moveStep } = useContext(GameContext)
 
-  const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-    event.dataTransfer.setData("dragging_color", color);
-  };
+  const handleDragStart = useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.dataTransfer.setData('dragging_color', color)
+    },
+    [color],
+  )
+
+  const style = useMemo(() => {
+    return {
+      backgroundColor: `#${color}`,
+      borderColor: closest ? '#ff0000' : '#9ca3af',
+      cursor: moveStep > 2 ? 'pointer' : 'default',
+    }
+  }, [closest, color, moveStep])
 
   return (
     <Tooltip
@@ -24,18 +35,14 @@ export function Tile({ position, color, closest }: TileProps) {
       }`}
     >
       <div
-        className={`border-2 rounded w-6 h-6`}
-        style={{
-          backgroundColor: `#${color}`,
-          borderColor: closest ? "#ff0000" : "#9ca3af",
-          cursor: moveStep > 2 ? "pointer" : "default",
-        }}
+        className='border-2 rounded w-6 h-6'
+        style={style}
         draggable={moveStep > 2 ? true : false}
         id={position}
         onDragStart={handleDragStart}
       />
     </Tooltip>
-  );
+  )
 }
 
-export default Tile;
+export default Tile

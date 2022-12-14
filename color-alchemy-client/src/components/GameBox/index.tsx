@@ -1,15 +1,15 @@
-import { useContext, useEffect } from "react";
-import { GameContext } from "../../context/game.context";
-import Grid from "../Grid";
-import Source from "../Source";
-import Tile from "../Tile";
-import Modal from "../Modal";
-import { useToggleState } from "../../hooks/use-toggle-state";
+import { useContext, useEffect } from 'react'
+import { GameContext } from '../../context/game.context'
+import { useToggleState } from '../../hooks/use-toggle-state'
+import Grid from '../Grid'
+import Source from '../Source'
+import Tile from '../Tile'
+import Modal from '../Modal'
 import {
   getDifferenceTargetColorPercent,
   getShinedColor,
   toNumbersRGBColor,
-} from "../../utils";
+} from '../../utils'
 
 export function GameBox() {
   const {
@@ -19,68 +19,68 @@ export function GameBox() {
     setBoxColors,
     closestColor,
     setClosestColor,
-  } = useContext(GameContext);
+  } = useContext(GameContext)
 
-  const createModal = useToggleState();
+  const createModal = useToggleState()
 
   useEffect(() => {
     if (gameInfo) {
       let indexOfClosestColor: number = boxColors.findIndex(
-        (item) => item.closest
-      );
+        (item) => item.closest,
+      )
       let closestColorPercent = getDifferenceTargetColorPercent(
         gameInfo.target,
-        closestColor
-      );
+        closestColor,
+      )
 
       const updatedTilesColor = boxColors.map((item, index) => {
-        if (item.type === "tile") {
+        if (item.type === 'tile') {
           const shinedColor = getShinedColor(
             boxColors,
             item.position,
             gameInfo?.width,
-            gameInfo?.height
-          );
+            gameInfo?.height,
+          )
           const targetColorPercent = getDifferenceTargetColorPercent(
             gameInfo.target,
-            toNumbersRGBColor(shinedColor)
-          );
+            toNumbersRGBColor(shinedColor),
+          )
 
           if (targetColorPercent < closestColorPercent) {
-            indexOfClosestColor = index;
-            closestColorPercent = targetColorPercent;
+            indexOfClosestColor = index
+            closestColorPercent = targetColorPercent
           }
 
           return {
             ...item,
             color: shinedColor,
             closest: false,
-          };
+          }
         }
-        return item;
-      });
+        return item
+      })
 
       updatedTilesColor[indexOfClosestColor] = {
         ...updatedTilesColor[indexOfClosestColor],
         closest: true,
-      };
+      }
 
-      setBoxColors(updatedTilesColor);
+      setBoxColors(updatedTilesColor)
       setClosestColor(
-        toNumbersRGBColor(updatedTilesColor[indexOfClosestColor].color)
-      );
+        toNumbersRGBColor(updatedTilesColor[indexOfClosestColor].color),
+      )
     }
-  }, [moveStep]);
+  }, [moveStep])
 
   return (
-    <div className="w-fit">
+    <div className='w-fit'>
       {gameInfo && (
         <Grid columns={`${gameInfo.width + 2}`}>
           {boxColors.map((v) => {
-            if (v.type === "empty") {
-              return <div key={v.position} />;
+            if (v.type === 'empty') {
+              return <div key={v.position} />
             }
-            if (v.type === "source") {
+            if (v.type === 'source') {
               return (
                 <Source
                   key={v.position}
@@ -88,7 +88,7 @@ export function GameBox() {
                   color={v.color}
                   openModal={createModal.onOn}
                 />
-              );
+              )
             }
 
             return (
@@ -98,13 +98,13 @@ export function GameBox() {
                 color={v.color}
                 closest={v.closest}
               />
-            );
+            )
           })}
         </Grid>
       )}
       <Modal onModal={createModal.on} closeModal={createModal.onOff} />
     </div>
-  );
+  )
 }
 
-export default GameBox;
+export default GameBox
